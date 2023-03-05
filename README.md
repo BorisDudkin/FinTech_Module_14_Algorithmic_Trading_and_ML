@@ -4,7 +4,7 @@
 
 ---
 
-![ecommerce](Images/Algo_Trading.jpg)
+![ecommerce](Images/algo-trading.jpg)
 
 ---
 
