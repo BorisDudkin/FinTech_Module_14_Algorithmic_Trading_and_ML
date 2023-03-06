@@ -128,7 +128,7 @@ Algorithmic Trading and Machine Learning Models application consists of the foll
 - We can review the classification report associated with the SVC model prediction:<br/>
   ![cl1](Images/svm_classification_report.JPG)<br/>
   The evaluation shows the model accuracy of 0.55. The most notable characteristic is the recall, showing 0.96 for 1.0 and 0.04 for -1.0. That indicates that model is more likely to generate the buy rather than sell signals. Also, since we calculate the strategy returns by multiplying
-  actual retuens and shifted predicted signals, it is of no surprise that the model's strategy returns are quite close to the actual returns, as it s more likely to produce 1.0 than -1.0:<br/>
+  actual returns and shifted predicted signals, it is of no surprise that the model's strategy returns are quite close to the actual returns, as it s more likely to produce 1.0 than -1.0:<br/>
   ![actual_strategy1](Images/SVC1.JPG)<br/>
 
 **Tuning the Baseline Trading Algorithm**<br/>
@@ -159,7 +159,7 @@ Algorithmic Trading and Machine Learning Models application consists of the foll
     ![actual_strategy4](Images/Tree.JPG)<br/>
 
 **Summary and Conclusion**:<br/>
-When selecting two different models and tuning some of the parameters we have not managed to achive superior accuracy (with the maximum of 0.56 accuracy, we are just slightly above the coin toos). Also, most of the attempts resulted in either one of the predicted signals perform very poorely on the re-call evaluation chriteria, which makes our model not as reliable as we would like it to be. We come to the same conclusion when comparing all the predicted strategy returns to the original strategy we generated.<br/>
+When selecting two different models and tuning some of the parameters we have not managed to achieve superior accuracy (with the maximum of 0.56 accuracy, we are just slightly better than the coin toos). Also, most of the attempts resulted in either one of the predicted signals perform very poorely on the re-call evaluation chriteria, which makes our model not as reliable as we would like it to be. We come to the same conclusion when comparing all the predicted strategy returns to the original strategy we generated.<br/>
 Based on those finding it would be advisable to:
 
 - get a larger dataset and train the model on a longer period of data;
