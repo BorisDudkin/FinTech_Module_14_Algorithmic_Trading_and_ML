@@ -1,0 +1,5 @@
+* 	 (HEAD -> main) readme completed
+* 	 (origin/main, origin/HEAD) readme updated
+* 	 notebook updated with new parameters
+* 	 initial commit
+* 	 Initial commit
