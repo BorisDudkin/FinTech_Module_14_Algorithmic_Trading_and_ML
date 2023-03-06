@@ -1,6 +1,6 @@
 # Algorithmic Trading and Machine Learning Models.
 
-### Algorithmic Trading powered by Machine Learning models enables investors to automatically trade assets in the highly dynamic and volatile environments. Machine learning systems can evaluate multiple factors that influence prices of financial instruments and efficiently generate accurate trading decisions.<br/> Algorithmic Trading and Machine Learning Models application takes you through the process of implementing and evaluating of the Machine Learning driven Algorithmic Trading strategies.
+### Algorithmic Trading powered by Machine Learning models enable investors to automatically trade assets in the highly dynamic and volatile environments. Machine learning systems can evaluate multiple factors that influence prices of financial instruments and efficiently generate accurate trading decisions.<br/> Algorithmic Trading and Machine Learning Models application takes you through the implementing and evaluating process of the Machine Learning driven Algorithmic Trading strategies.
 
 ---
 
@@ -87,78 +87,84 @@ pip install -U scikit-learn
 
 > Application summary<br/>
 
-Machine Learning Models and Venture Capital application assist in creating and evaluating a neural network model that predicts whether applicants will be successful if funded by a venture capital firm. The tool takes a user through three steps involving identifying, evaluating and optimizing the neural network models:<br/>
+Algorithmic Trading and Machine Learning Models application consists of the following building blocks:<br/>
 
-- Processing of the data for a neural network model.
-- Using the model-fit-predict pattern to compile and evaluate a binary classification model.
-- Optimizing the model.
+- Establishing a Baseline Performance
+- Tuning the Baseline Trading Algorithm
+- Evaluating a New Machine Learning Classifier
 
-**Processing of the data for a neural network model:**<br/>
+**Establish a Baseline Performance:**<br/>
 
-- In this part of the applcation we load the dataset and chek it for the categorical values: <br/>
+1. Features and Target identification:<br/>
+
+- Features:<br/>
+  We identify the trading indicators that will serve as _features_ within our models:
+
+  - Those trading indicators will be long and short simple moving avareages (SMV). For the base model the long window will be set to 100 days and thw hsort window - to 4 days.
+
+- Target:<br/>
+  The following trading signals will be used as a _target_ within the nachine learning models we will create later in the application:<br/>
+
+  - When Actual Returns are greater than or equal to 0, generate signal to buy stock long
+  - When Actual Returns are less than 0, generate signal to sell stock short<br/>
+    Based on those signals and the actual returns, the strategy returns are calculated and displayed below together with the actual returns (the startegy returns are calculated by multiplyig the actual returns and the shifted trading signals: actual returns \* trading signals.shift()).
+    The comparison of the actual and strategy returns are presented below:
+
   ![actual_strategy](Images/Original.JPG)<br/>
-- Once identified, those values are transformed into numerical values with OneHotEncoder and concatenated with other numerical data from the original dataset.
-- The data is split into the features and the target and into the training and testing sets. The features are then scaled with the StandardScaler.
 
-**Compiling and Evaluating the Binary Classification Model Using a Neural Network:**<br/>
+  As can be see from the chart, the actual returns outperform the startegy returns, which should be expected as our strategy assumes buy high and sell low (buy when the actual return is positive and sell, when negative).
 
-- We start by creating a deep neural network with a two-layer deep neural network model that uses the relu activation function for both layers and the output activation function sigmoid appropriate for the classifier models. Below is the summary of the model we created:<br/>
+2. Training and Testing datasets:<br/>
+
+- The training dataset for the baseline model will be set to the first three months period of our data and the testing dataset will be the remaining period.
+- We then apply the scaler model to fit the X-train data transform the X_train and X_test DataFrames using the scaler.
+
+3. Model choice:<br/>
+
+- We use the SVC classifier model from SKLearn's support vector machine (SVM) learning method to fit the scaled training data and make predictions based on the scaled testing data.
+
+4.  Model evaluation<br/>
+
+- We can review the classification report associated with the SVC model prediction:<br/>
   ![cl1](Images/svm_classification_report.JPG)<br/>
-- We compile and fit the model using the binary_crossentropy loss function, the adam optimizer, and the accuracy evaluation metric. 50 epochs are used at this stage.<br/>
+  The evaluation shows the model accuracy of 0.55. The most notable characteristic is the recall, showing 0.96 for 1.0 and 0.04 for -1.0. That indicates that model is more likely to generate the buy rather than sell signals. Also, since we calculate the strategy returns by multiplying
+  actual retuens and shifted predicted signals, it is of no surprise that the model's strategy returns are quite close to the actual returns, as it s more likely to produce 1.0 than -1.0:<br/>
   ![actual_strategy1](Images/SVC1.JPG)<br/>
-- Next, we evaluate the model by using the scaled test data and the test target values <br/>
-  ![cl2](Images/svm_classification_report2.JPG)<br/>
-- We finalize this part by saving and exposrting the model we created to our Resources folder. <br/>
-  at this stage.<br/>
-  ![actual_strategy2](Images/SVC2.JPG)<br/>
-  **Optimizing the neural network model:**<br/>
 
-- Next, we evaluate the model by using the scaled test data and the test target values <br/>
-  ![cl3](Images/svm_classification_report3.JPG)<br/>
-- We finalize this part by saving and exposrting the model we created to our Resources folder. <br/>
-  at this stage.<br/>
-  ![actual_strategy3](Images/SVC3.JPG)<br/>
-  **Optimizing the neural network model:**<br/>
+**Tuning the Baseline Trading Algorithm**<br/>
 
-- Next, we evaluate the model by using the scaled test data and the test target values <br/>
-  ![cl4](Images/tree_classification_report.JPG)<br/>
-- We finalize this part by saving and exposrting the model we created to our Resources folder. <br/>
-  at this stage.<br/>
-  ![actual_strategy4](Images/tree.JPG)<br/>
-  **Optimizing the neural network model:**<br/>
+- Tuning bu adjusting the trainign and testing window:
 
-_Model 1_<br/>
+  - We first tune the baseline trading algorithm by adjusting the training and testing features: we change the length of the training data period from 3 months to 2 years (providing mode data for the model to learn). We then apply model-fit-predict steps to the new training and testing sets keeping the rest of the parameters unchanged.<br/>
+  - The results are evaluated:<br/>
 
-- We first optimize the model by adjusting the dataset: two features are identified as imbalanced and removed: STATUS and SPECIAL_CONSIDERATIONS. Below are the details of the imbalances for those two features:
+    ![cl2](Images/svm_classification_report2.JPG)<br/>
 
-  - STATUS:<br/>
+  - Although we managed to incease accuracy from 0.55 to 0.56, the recall indicator became even more biased towards 1.0 signal. As a result, the predicted strategy returns became more aligned with the actual returns:<br/>
+    ![actual_strategy2](Images/SVC2.JPG)<br/>
 
-  - SPECIAL_CONSIDERATIONS:<br/>
+- Tuning by adjusting the short and long windows of the Simple Moving Averages features (the length of the training and testing data are re-set back to the base case (3 month training data)):
 
-- We compile the model using the rest of the features and characteristics of the original model:
+  - We first set the short window to 5 days and the long window to 50 days vs the original 4 /100. We then apply model-fit-predict steps to the new training and testing sets keeping the rest of the parameters and the model unchanged.<br/>
+  - The results are evaluated:<br/>
+    ![cl3](Images/svm_classification_report3.JPG)<br/>
+  - The accuracy of this model dropped to 0.54, however, the recall characteristic became more balanced, although still performing badly for -1.0 signal (0.18). Consequently, the predicted strategy returns are still aligned with the actual returns, although to a lesser extent:<br/>
+    ![actual_strategy3](Images/SVC3.JPG)<br/>
 
-- The evaluation produces the following results:<br/>
+  **Decision Tree Classifier model:**<br/>
 
-_Model 1a_
+  - We finally evaluate our algorithmic trading by applying a different classifier - Decision Tree model, to the original base features and target:<br/>
+    ![cl4](Images/tree_classification_report.JPG)<br/>
+  - The accuracy is inferior to the one produced by the SVM. Interestingly, this model generates much higher recall of 0.88 for -1.0 sell signal (SVM was more biased towards the buy signla of 1.0). As a consequence, the startegy returns are quite opposite and are mirroring the actual returns: <br/>
+    ![actual_strategy4](Images/Tree.JPG)<br/>
 
-- We optimize this model further by increasing the number of epochs to 100 from 50 with the evaluation results demostrated below:<br/>
+**Summary and Conclusion**:<br/>
+When selecting two different models and tuning some of the parameters we have not managed to achive superior accuracy (with the maximum of 0.56 accuracy, we are just slightly above the coin toos). Also, most of the attempts resulted in either one of the predicted signals perform very poorely on the re-call evaluation chriteria, which makes our model not as reliable as we would like it to be. We come to the same conclusion when comparing all the predicted strategy returns to the original strategy we generated.<br/>
+Based on those finding it would be advisable to:
 
-_Model 2_
-
-- This optimization involves reverting to the original data set and modifying the original model parameters as follows:<br/>
-  - Added one hidden layer;
-  - Hidden layers activation function changed to Leaky ReLU;
-  - Epochs increased from 50 to 100.<br/>
-- Below is the summary of this model:<br/>
-
-- The evaluation of this model produces the following results:<br/>
-
-**Summary**:<br/>
-The loss and accuracy parametes of all our models are compared below:<br/>
-
-By removing two imbalanced features we managed to increase the model's loss but the accuracy parameter slightly deteriorted.<br/> Interestingly, increasing the number of epochs did not imporve the optimized model's performance.<br/>
-When reverting back to the original dataset and changing the model's parameters we improved the loss metrics but the accuracy decreased comparing to the original model. However, in terms of the loss model M2 is is still underperforming model M1 but overperforming M1 on accuracy.<br/>
-Overall, we did not succeed to significantly improve the original model's performance. In this case the subject matter expert's opinion will be decisive in the ultimate model selection.<br/>
+- get a larger dataset and train the model on a longer period of data;
+- intoduce more trading indicators as features to our model;
+- test more classifier models (logistic regression, KNN, Random Forest, Neural Networks).
 
 > Getting started<br/>
 
